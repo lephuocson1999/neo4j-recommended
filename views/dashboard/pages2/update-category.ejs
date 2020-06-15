@@ -1,0 +1,97 @@
+<%- include ('../partials2/header')%> 
+<%- include ('../partials2/side-bar')%>
+
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Sửa Danh Mục</h4>
+            <p class="card-description">Basic form elements</p>
+            <form class="forms-sample">
+                <div class="form-group">
+                    <label for="exampleInputName1">Tên Danh Mục </label>
+                    <input type="text" class="form-control" value = '<%=category.properties.name%>' id="categoryName" placeholder="Tên Danh Mục" />
+                </div>
+                <h4 class="card-description">Có thể điền hoặc bỏ trống</h4>
+                <div class="form-group">
+                    <label for="input-2">đối tượng thường mua</label>
+                    <select class="form-control" name="sex" id="sex" required>
+                        <% if (category.properties.maleMajority == 1 ){%>
+                            <option value="1">nam</option>
+                            <option value="0">nu</option>
+                            <option value="2">ca 2</option>
+                        <%}else if (category.properties.maleMajority == 0){%>
+                            <option value="0">nu</option>
+                            <option value="1">nam</option>
+                            <option value="2">ca 2</option>
+                        <%}else{%>
+                            <option value="2">ca 2</option>
+                            <option value="0">nu</option>
+                            <option value="1">nam</option>
+                        <%}%>
+                        
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="input-2">độ tuổi thường mua</label>
+                    <select class="form-control" name="old" id="old" required>
+                        <% if (category.properties.oldMajority == 20) {%>
+                            <option value="20">duoi 20</option>
+                            <option value="35">tu 20 den 35</option>
+                            <option value="40">tu 35 tro len </option>
+                        <%}else if (category.properties.oldMajority == 35) {%>
+                            <option value="35">tu 20 den 35</option>
+                            <option value="20">duoi 20</option>
+                            <option value="40">tu 35 tro len </option>
+                        <%}else{%>
+                            <option value="40">tu 35 tro len </option>
+                            <option value="35">tu 20 den 35</option>
+                            <option value="20">duoi 20</option>
+                        <%}%>
+                        
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-gradient-primary mr-2 btnEditCategory">Them</button>
+                <a class="btn btn-light" href="/categorys/list"> Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include ('../partials2/footer')%>
+<script>
+    // function validateForm()  {
+    //         document.getElementById("categoryName").value = "";
+    //         document.getElementById("sex").value = "";
+    //         document.getElementById("old").value = "";
+    // }
+    $(document).on('click', '.btnEditCategory', function (e) {
+        e.preventDefault();
+        let categoryName = $("#categoryName").val();
+        let oldMajority = '';
+        let maleManiority = '';
+        oldMajority = $('#old option:selected').val();
+        maleManiority = $('#sex option:selected').val();
+
+        console.log({categoryName, oldMajority, maleManiority});
+        
+        if(!categoryName){
+            return toastr["warning"]("Bạn chưa nhập tên danh mục", "Cảnh Báo")
+        }
+        $.ajax({
+            url: `/categorys/update`,
+            method: 'POST',
+            data: {
+                categoryName, maleManiority, oldMajority
+            },
+            success: resp =>{
+                if(!resp.error){
+                    toastr["success"]("Bạn đã cập nhật thành công", "Chúc Mừng")
+                    // validateForm();
+                }else{
+                    toastr["warning"]("Bạn đã cập nhật thất bại", "Thất Bại")
+                }
+            },
+            error: err => console.log({err})
+        })
+    });
+</script>

@@ -1,0 +1,74 @@
+<%- include ('../partials2/header')%> 
+<%- include ('../partials2/side-bar')%>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Bordered table</h4>
+            <p class="card-description">Add class <code>.table-bordered</code></p>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên Danh Mục</th>
+                        <th>Status</th>
+                        <th>Tuổi</th>
+                        <th>Giới Tính</th>
+                        <th>#</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% listCategory.forEach( category => {%>
+                        <tr>
+                            <td><%= category._fields[0].properties.id %></td>
+                            <td><%= category._fields[0].properties.name %></td>
+                            <td><%=  category._fields[0].properties.status %></td>
+                            <td> 
+                                <%= category._fields[0].properties.oldMajority %>
+                            </td>
+                            <td> 
+                                <% if (category._fields[0].properties.maleMajority == 1){%>
+                                    Nam
+                                <%}else if(category._fields[0].properties.maleMajority == 2){%>
+                                    Cả Nam và Nữ
+                                <%}else{%>
+                                    Nữ
+                                <%} %>
+                            </td>
+                            <td> 
+                                <button class="btn btn-primary"><a href="/categorys/update/<%=category._fields[0].properties.id%>" style="color: white; ">Sua</a></button>
+                                <button id ='<%=category._fields[0].properties.id%>' class ='btn btn-danger btn-delete-category'> Xoa</button>
+                            </td>
+                        </tr>
+                        <%})%>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<%- include ('../partials2/footer')%>
+<script>
+
+    $(document).on('click','.btn-delete-category', function(e) {
+        let id = $(this).attr('id');
+        console.log({id});
+
+        $.ajax({
+            url: `/categorys/delete/${id}`,
+            method: 'POST',
+            success: resp =>{
+                if(!resp.error){
+                    $(this).closest("tr").remove();
+                    toastr["success"]("Bạn đã xoa thành công", "Chúc Mừng")
+                }else{
+                    return toastr["warning"]("Bạn đã xoa thất bại", "Thất Bại")
+                }
+            },
+            error: err => console.log({err})
+        })
+        
+    })
+
+</script>
+

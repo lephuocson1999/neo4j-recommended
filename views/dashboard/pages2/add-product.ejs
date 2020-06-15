@@ -1,0 +1,107 @@
+<%- include ('../partials2/header')%> 
+<%- include ('../partials2/side-bar')%>
+
+<div class="col-10 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Thêm San Pham</h4>
+            <p class="card-description">Basic form elements</p>
+            <form class="forms-sample" >
+                <div class="form-group">
+                    <label for="exampleInputName1">Tên Sản Phẩm </label>
+                    <input type="text" class="form-control" id="productName" placeholder="Tên Danh Mục" />
+                </div>
+                <div class="form-group">
+                    <label for="input-2">Danh Mục</label>
+                    <select class="form-control" name="category" id="category" >
+                        
+                        <% listCategory.forEach( item => {%>
+                            <option value="<%= item._fields[0].properties.name %>"><%= item._fields[0].properties.name %></option>
+                        <%})%>
+                        <!-- <option value="1">nam</option>
+                        <option value="0">nu</option>
+                        <option value="2">ca 2</option> -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>File upload</label>
+                    <input type="file" name="img[]" id="image" class="file-upload-default" />
+                    <div class="input-group col-xs-12">
+                        <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image" />
+                        <span class="input-group-append">
+                            <button class="file-upload-browse btn btn-gradient-primary" type="button">Upload</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputCity1">Số lượng</label>
+                    <input type="text" class="form-control" id="amout" placeholder="Số lượng" />
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputCity1">Giá</label>
+                    <input type="text" class="form-control" id="price" placeholder="Giá" />
+                </div>
+                <button type="submit" class="btn btn-gradient-primary mr-2 btnAddProduct">Them</button>
+                <a class="btn btn-light" href="/products/list"> Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include ('../partials2/footer')%>
+<script>
+    function validateForm()  {
+            document.getElementById("productName").value = "";
+            document.getElementById("amout").value = "";
+            document.getElementById("price").value = "";
+    }
+
+    $(document).on('click', '.btnAddProduct', function (e) {
+        e.preventDefault();
+        let productName = $("#productName").val();
+        let amout = $("#amout").val();
+        let price = $("#price").val();
+        let categoryName = '';
+        categoryName = $('#category option:selected').val();
+        let _imageDemo = $('#image')[0].files[0];
+
+        let formData = new FormData();
+
+        if(_imageDemo){
+			formData.append('avatar', _imageDemo);
+        }
+
+        console.log({productName, categoryName , amout, price});
+        console.log({_imageDemo});
+        
+
+        formData.append('productName', productName);
+		formData.append('category', categoryName);
+		formData.append('amout', amout);
+		formData.append('price', price);
+
+        console.log({formData})
+        
+        if(!productName || !amout || !price){
+            return toastr["warning"]("Bạn chưa nhập tên sản phẩm hoặc giá hoặc số lượng", "Cảnh Báo")
+        }
+
+        $.ajax({
+            url: `/products/new-product`,
+            method: 'POST',
+            enctype: 'multipart/form-data',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: resp =>{
+                if(!resp.error){
+                    toastr["success"]("Bạn đã thêm thành công", "Chúc Mừng")
+                    validateForm();
+                }else{
+                    toastr["warning"]("Bạn đã thêm thất bại", "Thất Bại")
+                }
+            },
+            error: err => console.log({err})
+        })
+    });
+</script>

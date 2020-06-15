@@ -1,0 +1,143 @@
+<%- include ('../partials2/header')%> 
+<%- include ('../partials2/side-bar')%>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Danh sách Order</h4>
+            <p class="card-description">Add class <code>.table-bordered</code></p>
+            <label>
+                Search:
+                <input name="input-search" id="input-search" type="text" class="form-control form-control-sm .loadProduct" placeholder="Tìm kiếm" aria-controls="dataTable">
+            </label>
+            <table class="table table-bordered" id="dataTable">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>idCustomer</th>
+                        <th>Danh sách sản phẩm</th>
+                        <th>Thời Gian Order</th>
+                        <th>Địa Chỉ</th>
+                        <th>Tổng Tiền</th>
+                        <th>#</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% listOrders.forEach( ( order, index) => {%>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= order._fields[0].properties.idCustomer %></td>
+                            <td> 
+                                <li>
+                                    <%= order._fields[0].properties.listProduct %>
+                                </li>
+                            </td>
+                            <td> 
+                                <%=  order._fields[0].properties.timeOrder %>
+                            </td>
+                            <td> 
+                                <%=  order._fields[0].properties.addressShip %>
+                            </td>
+                            <td> 
+                                <%=  order._fields[0].properties.totalPrice %>
+                            </td>
+                            <td> 
+                                <button class="btn btn-primary"><a href="/products/update/<%=order._fields[0].properties.id%>" style="color: white; ">Sua</a></button>
+                                <button id ='<%=order._fields[0].properties.id%>' class ='btn btn-danger btn-delete-product'> Xoa</button>
+                            </td>
+                        </tr>
+                        <%})%>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<%- include ('../partials2/footer')%>
+<script>
+
+    $(document).on('click','.btn-delete-product', function(e) {
+        let id = $(this).attr('id');
+        console.log({id});
+
+        $.ajax({
+            url: `/products/delete/${id}`,
+            method: 'POST',
+            success: resp =>{
+                if(!resp.error){
+                    $(this).closest("tr").remove();
+                    toastr["success"]("Bạn đã xoa thành công", "Chúc Mừng")
+                }else{
+                    return toastr["warning"]("Bạn đã xoa thất bại", "Thất Bại")
+                }
+            },
+            error: err => console.log({err})
+        })
+        
+    })
+
+    $(document).on('keyup','#input-search', function(e) {
+        let productName = $('#input-search').val();
+        console.log({productName});
+        $.ajax({
+            url:`/products/tim-kiem?productName=${productName}`,
+            method: 'get',
+            success: resp => {
+
+                let resultArr = resp.data
+
+                if(resultArr){
+                    $('#dataTable').find('tbody').empty()
+                    if(resultArr.length && resultArr){
+                        // for (let i = 0; i < resultArr.length; i++){
+                        //     let a = resultArr._fields[i].properties.name;
+                        //     console.log({a});
+                        resultArr.forEach((result, index) => {
+                            $('#dataTable').find('tbody').append(`
+                                <tr>
+                                    
+                                    <td> ${index + 1} </td>
+                                    <td> ${result._fields[0].properties.name} </td>
+                                    <td> <img src="${result._fields[0].properties.image}" width="100x" height="100px" > </td>
+                                    <td> ${result._fields[0].properties.amout} </td>
+                                    <td> ${result._fields[0].properties.price}
+                                    </td>
+                                    <td> 
+                                        <button class="btn btn-primary"><a href="/products/update/${result._fields[0].properties.id}" style="color: white; ">Sua</a></button>
+                                        <button id ='${result._fields[0].properties.id}' class ='btn btn-danger btn-delete-product'> Xoa</button>
+                                    </td>
+                                </tr>
+                            `)
+                        })
+                    }
+                // }else if (!resultArr){
+                //     $('#dataTable').show();
+                }else{
+                    $('#dataTable').find('tbody').empty()
+                    $('#dataTable').find('tbody').append(`
+                        <% listProductsFindAll.forEach( ( product, index) => {%>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= product._fields[0].properties.name %></td>
+                            <td> 
+                                <img src="<%= product._fields[0].properties.image %>" width="100x" height="100px" >
+                            </td>
+                            <td> 
+                                <%=  product._fields[0].properties.amout %>
+                            </td>
+                            <td> 
+                                <%=  product._fields[0].properties.price %>
+                            </td>
+                            <td> 
+                                <button class="btn btn-primary"><a href="/products/update/<%=product._fields[0].properties.id%>" style="color: white; ">Sua</a></button>
+                                <button id ='<%=product._fields[0].properties.id%>' class ='btn btn-danger btn-delete-product'> Xoa</button>
+                            </td>
+                        </tr>
+                        <%})%>`)
+                }
+            }
+        })
+    })
+
+</script>
+

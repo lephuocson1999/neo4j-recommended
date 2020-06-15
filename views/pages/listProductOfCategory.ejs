@@ -1,0 +1,94 @@
+<%- include ('../partials/header')%>
+<%- include ('../partials/sidebar')%>
+<div class="col-lg-9 col-md-9 col-12 nopadding-left">
+    <div class="ambit-key">
+        <div class="our-product-area best-offere featur-padd mt25">
+            <!-- area title start -->
+            <div class="area-title">
+                <h2>Danh sách sản phẩm</h2>
+            </div>
+            <!-- area title end -->
+            <!-- our-product area start -->
+            <div class="features-tab">
+                <!-- Nav tabs -->
+                <ul class="nav">
+                    <li><a class="active" href="#home2" data-toggle="tab"><i class="fa fa-list"></i>Watches</a></li>
+                    <li><a href="#new2" data-toggle="tab"><i class="fa fa-arrow-circle-o-down"></i>Books</a></li>
+                    <li><a href="#profile2" data-toggle="tab"><i class="fa fa-star-o"></i>Sports</a></li>
+                </ul>
+                <div class="row">
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade show active" id="home2">
+                            <!--==============================watches=============================-->
+                            <div class="row row-margin2 feature-carousel-tab">
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-padd">
+                                    <% if (listProductOfCategory && listProductOfCategory.length) { %>
+                                        <% listProductOfCategory.forEach(product => { %>
+                                            <div class="single-product">
+                                                <div class="product-label">
+                                                    <div class="new"></div>
+                                                </div>
+                                                <div class="product-img">
+                                                    <a href="http://localhost:3000/products/single-product/<%=product._fields[0].properties.id%>">
+                                                        <img class="primary-image" src="<%= product._fields[0].properties.image%>" alt="">
+                                                    </a>
+                                                </div>
+                                                <div class="product-content">
+                                                    <h2 class="product-name"><a href="#"></a><%=product._fields[0].properties.name%></h2>
+                                                    <div class="rating">
+                                                        <a href="#"><i class="fa fa-star"></i></a>
+                                                        <a href="#"><i class="fa fa-star"></i></a>
+                                                        <a href="#"><i class="fa fa-star"></i></a>
+                                                        <a href="#"><i class="fa fa-star"></i></a>
+                                                        <a href="#"><i class="fa fa-star-o"></i></a>
+                                                    </div>
+                                                    <div class="price-box">
+                                                        <span class="new-price"><%=product._fields[0].properties.price%></span>
+                                                    </div>
+                                                </div>
+                                                <div class="product-content2">
+                                                    <h2 class="product-name"><a href="#"><%=product._fields[0].properties.name%></a></h2>
+                                                    <div class="rating">
+                                                        <a href="#"><i class="fa fa-star"></i></a>
+                                                        <a href="#"><i class="fa fa-star"></i></a>
+                                                        <a href="#"><i class="fa fa-star"></i></a>
+                                                        <a href="#"><i class="fa fa-star"></i></a>
+                                                        <a href="#"><i class="fa fa-star-o"></i></a>
+                                                    </div>
+                                                    <div class="price-box">
+                                                        <span class="new-price"><%=product._fields[0].properties.price%></span>
+                                                    </div>
+
+                                                    <div class="button-container">
+                                                        <a title="Add to Cart" href="#" class="button cart_button">
+                                                            <span>Add to Cart</span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <ul class="add-to-links">
+                                                    <li>
+                                                        <div class="wishlist">
+                                                            <a title="" href="#" data-toggle="tooltip" data-original-title="Add to Wishlist"><i class="fa fa-heart"></i></a>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="view-products">
+                                                            <a title="" href="#" data-toggle="tooltip" data-placement="top" data-original-title="view pordcuts"><i class="fa fa-arrows-alt"></i></a> </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        <% }) %>
+                                    <% } %>
+                                </div>
+                                
+                            </div>
+                            <!--feature-carousel-tab-->
+                        </div>
+                    </div>
+                    
+            </div>
+        </div>
+    </div>
+</div>
+<%- include ('../partials/footer')%>

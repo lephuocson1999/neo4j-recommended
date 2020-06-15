@@ -1,0 +1,119 @@
+<%- include ('../partials2/header')%> 
+<%- include ('../partials2/side-bar')%>
+
+<div class="col-10 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Sửa Danh Mục</h4>
+            <p class="card-description">Basic form elements</p>
+            <form class="forms-sample">
+                <div class="form-group">
+                    <label for="exampleInputName1">Tên Sản Phẩm </label>
+                    <input type="text" class="form-control" value = '<%=product.properties.id%>' id="productID" placeholder="ID" />
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputName1">Tên Sản Phẩm </label>
+                    <input type="text" class="form-control" value = '<%=product.properties.name%>' id="productName" placeholder="Tên Sản Phẩm" />
+                </div>
+                <div class="form-group">
+                    <label for="input-2">Danh Mục</label>
+                    <select class="form-control" name="category" id="category" >
+                        
+                                
+                            <% listCategory.forEach( item => {%>
+                                <%if (item._fields[0].properties.id.toString() == category.properties.id.toString()){%>
+                                    <option value="<%= item._fields[0].properties.name %>" selected><%= item._fields[0].properties.name %></option>
+                                    <%}else{%>
+                                        <option value="<%= item._fields[0].properties.name %>"><%= item._fields[0].properties.name %></option>
+                                        <%}%>
+                            <%})%>
+                        <!-- <option value="1">nam</option>
+                        <option value="0">nu</option>
+                        <option value="2">ca 2</option> -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>File upload</label>
+                    <input type="file" name="img[]" id="image" class="file-upload-default" />
+                    <div class="input-group col-xs-12">
+                        <input type="text" id='img-current-product' value ='<%=product.properties.image%>' class="form-control file-upload-info" disabled placeholder="Upload Image" />
+                        <span class="input-group-append">
+                            <button class="file-upload-browse btn btn-gradient-primary" type="button">Upload</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputCity1">Số lượng</label>
+                    <input type="text" class="form-control" value = '<%=product.properties.amout%>' id="amout" placeholder="Số lượng" />
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputCity1">Giá</label>
+                    <input type="text" class="form-control" value = '<%=product.properties.price%>'  id="price" placeholder="Giá" />
+                </div>
+                <button type="submit" class="btn btn-gradient-primary mr-2 btnEditProduct">Them</button>
+                <a class="btn btn-light" href="/products/list"> Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include ('../partials2/footer')%>
+<script>
+    // function validateForm()  {
+    //         document.getElementById("categoryName").value = "";
+    //         document.getElementById("sex").value = "";
+    //         document.getElementById("old").value = "";
+    // }
+    $(document).on('click', '.btnEditProduct', function (e) {
+        e.preventDefault();
+        let productID = $("#productID").val();
+        let productName = $("#productName").val();
+        let amout = $("#amout").val();
+        let price = $("#price").val();
+        let imagelink = $("#img-current-product").val();
+        let categoryName = '';
+        categoryName = $('#category option:selected').val();
+        let _imageDemo = $('#image')[0].files[0];
+
+        let formData = new FormData();
+
+        if(_imageDemo){
+			formData.append('avatar', _imageDemo);
+        }
+
+        console.log({productName, categoryName , amout, price});
+        console.log({_imageDemo});
+        
+        formData.append('id', productID);
+        formData.append('productName', productName);
+		formData.append('category', categoryName);
+		formData.append('amout', amout);
+		formData.append('price', price);
+		formData.append('imagelink', imagelink);
+
+        console.log({formData})
+        
+        // if(!productName || !amout || !price){
+        //     return toastr["warning"]("Bạn chưa nhập tên sản phẩm hoặc giá hoặc số lượng", "Cảnh Báo")
+        // }
+        $.ajax({
+            url: `/products/update`,
+            method: 'POST',
+            enctype: 'multipart/form-data',
+            data: 
+                formData
+            ,
+            processData: false,
+            contentType: false,
+            success: resp =>{
+                if(!resp.error){
+                    toastr["success"]("Bạn đã cập nhật thành công", "Chúc Mừng")
+                    // validateForm();
+                }else{
+                    toastr["warning"]("Bạn đã cập nhật thất bại", "Thất Bại")
+                }
+            },
+            error: err => console.log({err})
+        })
+    });
+</script>

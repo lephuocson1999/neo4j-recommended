@@ -1,0 +1,75 @@
+<%- include ('../partials2/header')%> 
+<%- include ('../partials2/side-bar')%>
+
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Thêm Danh Mục</h4>
+            <p class="card-description">Basic form elements</p>
+            <form class="forms-sample">
+                <div class="form-group">
+                    <label for="exampleInputName1">Tên Danh Mục </label>
+                    <input type="text" class="form-control" id="categoryName" placeholder="Tên Danh Mục" />
+                </div>
+                <h4 class="card-description">Có thể điền hoặc bỏ trống</h4>
+                <div class="form-group">
+                    <label for="input-2">đối tượng thường mua</label>
+                    <select class="form-control" name="sex" id="sex" >
+                        <option value="1">nam</option>
+                        <option value="0">nu</option>
+                        <option value="2">ca 2</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="input-2">độ tuổi thường mua</label>
+                    <select class="form-control" name="sex" id="old" >
+                        <option value="20">duoi 20</option>
+                        <option value="35">tu 20 den 35</option>
+                        <option value="40">tu 35 tro len </option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-gradient-primary mr-2 btnAddCategory">Them</button>
+                <a class="btn btn-light" href="/categorys/list"> Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<%- include ('../partials2/footer')%>
+<script>
+    function validateForm()  {
+            document.getElementById("categoryName").value = "";
+            document.getElementById("sex").value = "";
+            document.getElementById("old").value = "";
+    }
+    $(document).on('click', '.btnAddCategory', function (e) {
+        e.preventDefault();
+        let categoryName = $("#categoryName").val();
+        let old = '';
+        let sex = '';
+        old = $('#old option:selected').val();
+        sex = $('#sex option:selected').val();
+
+        console.log({categoryName, old, sex});
+        
+        if(!categoryName){
+            return toastr["warning"]("Bạn chưa nhập tài khoản hoặc mật khẩu", "Cảnh Báo")
+        }
+        $.ajax({
+            url: `/categorys/new-category`,
+            method: 'POST',
+            data: {
+                categoryName, old, sex
+            },
+            success: resp =>{
+                if(!resp.error){
+                    toastr["success"]("Bạn đã thêm thành công", "Chúc Mừng")
+                    validateForm();
+                }else{
+                    toastr["warning"]("Bạn đã thêm thất bại", "Thất Bại")
+                }
+            },
+            error: err => console.log({err})
+        })
+    });
+</script>
